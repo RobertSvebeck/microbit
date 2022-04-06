@@ -1,63 +1,18 @@
 def on_received_number(receivedNumber):
-    global signal, secretNumber, questStarted, Sender1Reciever2
+    global NumberOfLedsShow, PlotedLeds, secretNumber, questStarted, Sender1Reciever2
     if questStarted == 1:
-        signal = radio.received_packet(RadioPacketProperty.SIGNAL_STRENGTH)
-        if signal < -90:
-            basic.show_leds("""
-                # # # # #
-                                # # # # #
-                                # # # # #
-                                # # # # #
-                                # # # # #
-            """)
-        elif signal < -77:
-            basic.show_leds("""
-                . . . . .
-                                # # # # #
-                                # # # # #
-                                # # # # #
-                                # # # # #
-            """)
-        elif signal < -72:
-            basic.show_leds("""
-                . . . . .
-                                . . . . .
-                                # # # # #
-                                # # # # #
-                                # # # # #
-            """)
-        elif signal < -68:
-            basic.show_leds("""
-                . . . . .
-                                . . . . .
-                                # # # # #
-                                # # # # #
-                                # # # # #
-            """)
-        elif signal < -62:
-            basic.show_leds("""
-                . . . . .
-                                . . . . .
-                                . . . . .
-                                # # # # #
-                                # # # # #
-            """)
-        elif signal < -45:
-            basic.show_leds("""
-                . . . . .
-                                . . . . .
-                                . . . . .
-                                . . . . .
-                                # # # # #
-            """)
+        NumberOfLedsShow = Math.round((100 + 42 + radio.received_packet(RadioPacketProperty.SIGNAL_STRENGTH)) / 4)
+        if NumberOfLedsShow <= 24:
+            PlotedLeds = 0
+            basic.clear_screen()
+            for y in range(5):
+                for x in range(5):
+                    PlotedLeds += 1
+                    if PlotedLeds >= NumberOfLedsShow:
+                        break
+                    led.plot(x, y)
         else:
-            basic.show_leds("""
-                # . . . #
-                                . # . # .
-                                . . # . .
-                                . # . # .
-                                # . . . #
-            """)
+            basic.clear_screen()
             if Sender1Reciever2 == 1:
                 secretNumber = receivedNumber
             basic.show_number(secretNumber)
@@ -65,6 +20,9 @@ def on_received_number(receivedNumber):
             questStarted = 0
             Sender1Reciever2 = 0
             secretNumber = 0
+            NumberOfLedsShow = 0
+            PlotedLeds = 0
+            NumberOfLedsShow = 0
             basic.clear_screen()
 radio.on_received_number(on_received_number)
 
@@ -86,10 +44,13 @@ def on_button_pressed_b():
         Sender1Reciever2 = 2
 input.on_button_pressed(Button.B, on_button_pressed_b)
 
-signal = 0
 secretNumber = 0
 questStarted = 0
 Sender1Reciever2 = 0
+NumberOfLedsShow = 0
+PlotedLeds = 0
+PlotedLeds = 0
+NumberOfLedsShow = 0
 Sender1Reciever2 = 0
 questStarted = 0
 secretNumber = 0
