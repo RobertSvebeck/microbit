@@ -1,6 +1,13 @@
 radio.onReceivedNumber(function (receivedNumber) {
-    if (questStarted == 1) {
+    if (questStarted == 0) {
+        questStarted = 1
+        SenderReciever = 1
+    }
+    if (questStarted == 1 && SenderReciever == 2) {
         NumberOfLedsShow = Math.round((100 + 42 + radio.receivedPacket(RadioPacketProperty.SignalStrength)) / 4)
+        if (NumberOfLedsShow == 10 && SenderReciever == 2) {
+            music.playTone(392, music.beat(BeatFraction.Whole))
+        }
         if (NumberOfLedsShow <= 24) {
             PlotedLeds = 0
             basic.clearScreen()
@@ -15,13 +22,14 @@ radio.onReceivedNumber(function (receivedNumber) {
             }
         } else {
             basic.clearScreen()
-            if (Sender1Reciever2 == 1) {
+            if (SenderReciever = 1) {
                 secretNumber = receivedNumber
             }
+            music.playMelody("G B A G C5 B A B ", 180)
             basic.showNumber(secretNumber)
             basic.pause(5000)
             questStarted = 0
-            Sender1Reciever2 = 0
+            SenderReciever = 0
             secretNumber = 0
             NumberOfLedsShow = 0
             PlotedLeds = 0
@@ -30,34 +38,83 @@ radio.onReceivedNumber(function (receivedNumber) {
         }
     }
 })
-input.onButtonPressed(Button.A, function () {
+input.onButtonPressed(Button.AB, function () {
     if (questStarted == 0) {
-        questStarted = 1
-        Sender1Reciever2 = 1
-    }
-})
-input.onButtonPressed(Button.B, function () {
-    if (questStarted == 0) {
+        music.playMelody("C5 B A G F E D C ", 180)
+        basic.showLeds(`
+            # # # # #
+            # . . . #
+            # . . . #
+            # . . . #
+            # # # # #
+            `)
+        basic.showLeds(`
+            # # # # #
+            # # # # #
+            # # . # #
+            # # # # #
+            # # # # #
+            `)
+        basic.showLeds(`
+            # # # # #
+            # # # # #
+            # # # # #
+            # # # # #
+            # # # # #
+            `)
         secretNumber = randint(1, 9)
-        basic.pause(5000)
         basic.showNumber(secretNumber)
+        music.playMelody("C D E F G A B C5 ", 180)
+        basic.pause(5000)
         basic.clearScreen()
         questStarted = 1
-        Sender1Reciever2 = 2
+        SenderReciever = 2
+    } else {
+        music.playMelody("C5 A B G A F G E ", 180)
+        basic.showLeds(`
+            # . . . #
+            . # . # .
+            . . # . .
+            . # . # .
+            # . . . #
+            `)
+        basic.clearScreen()
     }
 })
 let secretNumber = 0
 let questStarted = 0
-let Sender1Reciever2 = 0
 let NumberOfLedsShow = 0
 let PlotedLeds = 0
+let SenderReciever = 0
+basic.showLeds(`
+    . . . . .
+    . . . . .
+    . . # . .
+    . . . . .
+    . . . . .
+    `)
 PlotedLeds = 0
 NumberOfLedsShow = 0
-Sender1Reciever2 = 0
+SenderReciever = 0
+basic.showLeds(`
+    . . . . .
+    . # # # .
+    . # . # .
+    . # # # .
+    . . . . .
+    `)
 questStarted = 0
 secretNumber = 0
 radio.setTransmitPower(7)
 radio.setGroup(1)
+basic.showLeds(`
+    # # # # #
+    # . . . #
+    # . . . #
+    # . . . #
+    # # # # #
+    `)
+basic.clearScreen()
 basic.forever(function () {
     if (questStarted == 1) {
         radio.sendNumber(secretNumber)
